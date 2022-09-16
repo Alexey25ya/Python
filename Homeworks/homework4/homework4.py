@@ -1,10 +1,32 @@
 # 1 - Задайте натуральное число N. Напишите программу, которая составит список простых множителей числа N.
 # N = 20 -> [2,5]
 # N = 30 -> [2, 3, 5]
+n=int(input('Введите N: '))
+
+def simple_num_list(num):
+    '''программa, которая составит список простых множителей числа N.'''
+    simple_list = []
+    for i in range(2, num):
+        while num % i == 0:
+            num = num/i        
+            simple_list.append(i)
+            break
+    print(simple_list)
+simple_num_list(n)
+
 
 # 2 - Задайте последовательность чисел. Напишите программу, которая выведет список неповторяющихся элементов исходной последовательности.
 #  Не использовать множества.
 # [1,1,1,1,2,2,2,3,3,3,4] -> [1,2,3,4]
+list_num=[1,1,1,1,2,2,2,3,3,3,4,1,2,3,4]
+list_unique=[]
+for i in list_num:
+    if i in list_unique:
+        continue
+    list_unique.append(i)
+       
+print(list_unique)
+
 
 # 3 - В файле, содержащем фамилии студентов и их оценки, изменить на прописные буквы фамилии тех студентов,
 #  которые имеют средний балл более «4».
@@ -19,50 +41,63 @@
 # НАТАЛЬЯ ТАРАСОВА 5
 # Фредди Меркури 3
 # Денис Байцуров 4
+
 def write(path,input_s):
+    '''Ввод данных в файл'''
     data = open(path, 'w')
     data.write(input_s) 
     data.close()
 def read(path):
+    '''Чтение данных из файла'''
     data = open(path, 'r')
     output_s=data.readline()
     data.close()
-    return output_s   
+    return output_s 
+
+
+def  replace():
+    with open('f3_1','r') as f1,\
+        open('f3_2','w') as f2:
+        for line in f1:
+            list_line=line.split()
+            if float(list_line[-1])>4:
+                f2.write(line.upper())
+            else: f2.write(line)
+write('f3_1', 'Volkov Andrey 5\nNataliia Tarasova 5\nFreddy Merkury 3\nDenis Baycurov 4')
+replace()
+
+    
 # 4- Шифр Цезаря - это способ шифрования, где каждая буква смещается на определенное количество символов влево или вправо. 
 # При расшифровке происходит обратная операция. К примеру, слово "абба" можно зашифровать "бввб" - сдвиг на 1 вправо. "вггв" - сдвиг на 2 вправо,
 #  "юяяю" - сдвиг на 2 влево.
 # Сдвиг часто называют ключом шифрования.
 # Ваша задача - написать функцию, которая записывает в файл шифрованный текст, а также функцию, которая спрашивает ключ, 
 # считывает текст и дешифровывает его.
-# str =input('Введите текст на русском языке в нижнем регистре: ')
-# n=int(input('Введите ключ:'))
-# write('f4.txt',str)
-n=-2
-def cezar_encoder(st):
+
+input_text=input('Введите текст для шифрования: ')
+def caesar_encoder(st):
+    key=int(input('Введите ключ для шифрования: '))
+    list=[]
+    for i in range(len(st)):        
+        i=chr(ord(st[i])+key)          
+        list.append(i)
+    write('f4', (''.join(list)))        
+caesar_encoder(input_text)
+print(read('f4'))
+def caesar_decoder(st):
+    key=int(input('Введите ключ для дешифрования: '))
     list=[]
     for i in range(len(st)):
-        i=chr(ord(st[i])+n)          
+        i=chr(ord(st[i])-key)          
         list.append(i)
-    print(''.join(list))        
-cezar_encoder('аабба')
+    return''.join(list)        
+print(caesar_decoder(read('f4')))
 
 # 5 - Реализуйте RLE алгоритм: реализуйте модуль сжатия и восстановления данных. Входные и выходные данные хранятся в отдельных текстовых файлах.
 # файл первый:
 # AAAAAAAAAAAABBBBBBBBBBBCCCCCCCCCCDDDDDDEEEEEFFFFG python is sooooooo coooooool
 # файл второй:
 # сжатый текст.
-
-
-exit()
-def write(path,input_s):
-    data = open(path, 'w')
-    data.write(input_s) 
-    data.close()
-def read(path):
-    data = open(path, 'r')
-    output_s=data.readline()
-    data.close()
-    return output_s   
 
 def encode(s):
     encoding = ''
