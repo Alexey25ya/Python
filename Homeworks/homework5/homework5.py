@@ -27,6 +27,7 @@ count=10
 max_num=3
 
 def input_number(max_num,count,plaer):
+    '''Ввод числа, удовлетворяющего условию задачи'''
     flag = False
     while not flag:
         try:
@@ -40,6 +41,7 @@ def input_number(max_num,count,plaer):
     return number
 
 def player_vs_player(count):
+    """ Игрок против игрока"""
     draw=random.randint(1,2)
     if draw ==1:
         print('По результату жеребьевки ходит Игрок 1')
@@ -70,7 +72,8 @@ def player_vs_player(count):
                 print(f'осталось {count} конфет')
         print(f'Игрок {player}, Вы проиграли')
 
-def player_vs_random_bot(count):  
+def player_vs_random_bot(count):
+    """Игрок против "случайного" бота """  
     draw=random.randint(1,2)
     if draw ==1:
         print('По результату жеребьевки ходит Игрок 1')
@@ -108,6 +111,7 @@ def player_vs_random_bot(count):
         print(f'Игрок {player}, Вы проиграли')
 
 def player_vs_smart_bot(count):
+    """Игрок против "умного" бота """
     draw=random.randint(1,2)
     if draw ==1:
         print('По результату жеребьевки ходит Игрок 1')
@@ -151,6 +155,7 @@ def player_vs_smart_bot(count):
         print(f'Игрок {player}, Вы проиграли')
 
 def mode_of_game():
+    """Выбор режима игры"""
     mode=int(input('Введите режим игры от 1 до 3, где:\n 1 - это игра против человека\n 2 - это игра против "случайного" бота \n 3 - это игра против "умного" бота\n '))
     if mode==1:
         player_vs_player(count)
