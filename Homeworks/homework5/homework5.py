@@ -84,19 +84,19 @@ def player_vs_random_bot(count):
                 count-=player_num
                 print(f'осталось {count} конфет')
             if count>0:
-                player='бот'
+                player='"случайный" бот'
                 player_num=random.randint(1,max_num)        
                 while (player_num>count):
                     player_num=random.randint(1,max_num) 
                 print(f'Бот взял {player_num} конфет')
                 count-=player_num
                 print(f'осталось {count} конфет')
-        print(f'Игрок {player}, Вы проиграли')
+        print(f'Игрок {player} проиграл')
     if draw ==2:
         print('По результату жеребьевки ходит "случайный" бот')
         while count>0:
             if count>0:
-                player='бот'
+                player='"случайный" бот'
                 player_num=random.randint(1,max_num)        
                 while (player_num>count):
                     player_num=random.randint(1,max_num) 
@@ -108,7 +108,7 @@ def player_vs_random_bot(count):
                 player_num=input_number(max_num,count,player)
                 count-=player_num
                 print(f'осталось {count} конфет')
-        print(f'Игрок {player}, Вы проиграли')
+        print(f'Игрок {player} проиграл')
 
 def player_vs_smart_bot(count):
     """Игрок против "умного" бота """
@@ -122,7 +122,7 @@ def player_vs_smart_bot(count):
                 count-=player_num
                 print(f'осталось {count} конфет')
             if count>0:
-                player='бот'
+                player='"умный" бот'
                 if ((count-1)%(1+max_num))!=0:
                     player_num=((count-1)%(1+max_num))
                 elif count%max_num==0: 
@@ -132,12 +132,12 @@ def player_vs_smart_bot(count):
                 print(f'Бот взял {player_num} конфет')
                 count-=player_num
                 print(f'осталось {count} конфет')
-        print(f'Игрок {player}, Вы проиграли')
+        print(f'Игрок {player} проиграл')
     if draw ==2:
         print('По результату жеребьевки ходит "умный" бот')
         while count>0:
             if count>0:
-                player='бот'
+                player='"умный" бот'
                 if ((count-1)%(1+max_num))!=0:
                     player_num=((count-1)%(1+max_num))
                 elif count%max_num==0: 
@@ -152,7 +152,7 @@ def player_vs_smart_bot(count):
                 player_num=input_number(max_num,count,player)
                 count-=player_num
                 print(f'осталось {count} конфет')
-        print(f'Игрок {player}, Вы проиграли')
+        print(f'Игрок {player} проиграл')
 
 def mode_of_game():
     """Выбор режима игры"""
