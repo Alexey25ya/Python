@@ -1,6 +1,5 @@
 import check as ch
-from colorama import Fore
-from colorama import Style
+from colorama import Fore,Back
 
 def rational_number(number:str) -> float:
     '''
@@ -15,7 +14,7 @@ def complex_number(number:str) -> complex:
     '''
     input_d = Fore.GREEN + f'Введите действительную часть {number} числа: ' +Fore.WHITE
     input_mn = Fore.GREEN + f'Введите мнимую часть {number} числа: ' +Fore.WHITE
-    return ch.check_int_number(input_d), ch.check_int_number(input_mn)
+    return ch.check_float_number(input_d), ch.check_float_number(input_mn)
 
 def operation(oper:str) -> str:
     '''
@@ -26,9 +25,9 @@ def operation(oper:str) -> str:
 
 def choice_calc(number:str) -> int:
     '''
-    Выбор калькулятора
+    Выбор калькулятора комплексных или рациональных чисел
     '''
-    print(Fore.MAGENTA + 'Для выбора калькулятора рациональных чисел нажмите 1, для комплексных 2, для выхода из калькулятора 3: ' +Fore.WHITE)
+    print(Fore.MAGENTA+'Для выбора калькулятора рациональных чисел нажмите 1, для комплексных нажмите 2, для выхода из калькулятора нажмите 3: ' +Fore.WHITE)
     return ch.check_calc(number)
 
 def output_result(data, res):
