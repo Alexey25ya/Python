@@ -1,5 +1,13 @@
 import check as ch
-from colorama import Fore,Back
+from colorama import Fore
+
+
+def choice_calc(number:str) -> int:
+    '''
+    Выбор калькулятора комплексных или рациональных чисел
+    '''
+    print(Fore.MAGENTA+'Для выбора калькулятора рациональных чисел нажмите 1, для комплексных нажмите 2, для выхода из калькулятора нажмите 3: ' +Fore.WHITE)
+    return ch.check_calc(number)
 
 def rational_number(number:str) -> float:
     '''
@@ -22,13 +30,6 @@ def operation(oper:str) -> str:
     '''
     input_sign = Fore.YELLOW + f'Введите знак операции: (+, -, *, /):{oper}' +Fore.WHITE
     return ch.check_symbol(input_sign)
-
-def choice_calc(number:str) -> int:
-    '''
-    Выбор калькулятора комплексных или рациональных чисел
-    '''
-    print(Fore.MAGENTA+'Для выбора калькулятора рациональных чисел нажмите 1, для комплексных нажмите 2, для выхода из калькулятора нажмите 3: ' +Fore.WHITE)
-    return ch.check_calc(number)
 
 def output_result(data, res):
     '''

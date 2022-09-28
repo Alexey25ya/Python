@@ -1,14 +1,5 @@
 from colorama import Fore
 
-def check_int_number(number: str) -> int:
-    '''
-    Поверка целого числа
-    '''
-    while True:
-        try:
-            return int(input(number))
-        except ValueError:
-            print(Fore.RED+f'Неверно! Должно быть целое число!')
 
 def check_float_number(number: str) -> float:
     '''
