@@ -17,12 +17,13 @@ def check_alpha(name:str)->str:
     while True:
         try:
             a = input(name)
-            if a.isalpha():
+            if (a.isalpha() and 0<len(a)<20):
                 return a
             else:
-                print(Fore.RED + 'Вы ввели символы отличные от букв '+ Style.RESET_ALL)
+                print(Fore.RED + 'Вы ввели символы отличные от букв или большое количество символов '+ Style.RESET_ALL)
         except ValueError:
             print(Fore.RED + 'Неверно!'+ Style.RESET_ALL)
+
 
 def record_length(length:str)->str:
     '''Проверка длины вводимой строки и тут же проверка на пустую строку'''
