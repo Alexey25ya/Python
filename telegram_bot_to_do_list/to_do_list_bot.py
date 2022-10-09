@@ -116,6 +116,7 @@ def data(update, context):
 def time(update, context):
     tasks = read_csv()
     task = {}
+    update.message.reply_text(f'{task}')
     user = update.message.from_user
     logger.info("Task %s: %s", user.first_name, update.message.text)
     time = update.message.text
@@ -126,6 +127,7 @@ def time(update, context):
     task['Текущая дата'] = TIME_NOW
     task['Дата выполнения'] = data
     task['Задача'] = name
+    update.message.reply_text(f'{task}')
     tasks.append(task)
     o.write_csv(tasks)
     context.bot.send_sticker(update.message.chat.id, st.complete)
@@ -139,13 +141,17 @@ def search(update, context):
     logger.info("Выбор поиска: %s: %s", user.first_name, update.message.text)
     searchstring = update.message.text
     tasks = read_csv()
-    tasks_filter = o.filter_task(user.first_name, tasks)
-    searched_tasks = o.search(searchstring)
-    context.bot.send_message(update.effective_chat.id,
-                    f' {update.effective_user.first_name}, по вашему запросу "{searchstring}" найдено:')
-    update.message.reply_text('🧐')
-    tasks_string = o.view_tasks(searched_tasks)
-    update.message.reply_text(tasks_string)
+    if searchstring==[]:
+            context.bot.send_message(update.effective_chat.id,
+                    f' {update.effective_user.first_name}, по вашему запросу "{searchstring}" ничего не найдено:')
+    else:
+        tasks_filter = o.filter_task(user.first_name, tasks)
+        searched_tasks = o.search_task(searchstring, tasks)
+        context.bot.send_message(update.effective_chat.id,
+                        f' {update.effective_user.first_name}, по вашему запросу "{searchstring}" найдено:')
+        update.message.reply_text('🧐')
+        tasks_string = o.view_tasks(searched_tasks)
+        update.message.reply_text(tasks_string)
 
     return sub_menu(update, context)
 
