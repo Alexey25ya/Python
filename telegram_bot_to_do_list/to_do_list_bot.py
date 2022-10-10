@@ -1,8 +1,9 @@
+
 import telebot
 from datetime import datetime as dt
 import logging
 import operations as o
-from operations import read_csv, tasks
+from operations import read_csv
 from config import TOKEN
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import (
@@ -14,7 +15,7 @@ from telegram.ext import (
 )
 import stickers as st
 import config
-from phonebook_bot import choice
+
 bot = telebot.TeleBot(config.TOKEN)
 # Включим ведение журнала
 logging.basicConfig(
@@ -24,10 +25,8 @@ logger = logging.getLogger(__name__)
 
 # Определяем константы этапов разговора
 
-START,MAIN_MENU, SUB_MENU, MENU, EDIT, ADD, DELETE, VIEW, SEARCH, SEARCH_MENU, GET_TASK, GET_DATE, DATA, TIME = range(14)
+START,MAIN_MENU, SUB_MENU, MENU, EDIT, ADD,NAME,SURNAME,STATUS,DELETE, VIEW, SEARCH, SEARCH_MENU= range(13)
 
-'👀☑🔍📎🎬🎮'
-TIME_NOW = dt.now().strftime('%D_%H:%M')
 
 # функция обратного вызова точки входа в разговор
 
@@ -58,7 +57,7 @@ def sub_menu(update, context):
     markup_key = ReplyKeyboardMarkup(
         reply_keyboard, resize_keyboard=True, one_time_keyboard=True)
     context.bot.send_sticker(update.message.chat.id, st.hello)
-    update.message.reply_text('Выберете действие со списком дел 🧐', reply_markup=markup_key)
+    update.message.reply_text('Выберете действие со списком дел ', reply_markup=markup_key)
     return MENU
 
 def menu(update, context):
@@ -68,12 +67,12 @@ def menu(update, context):
     if choice == '👀 VIEW':
         return view(update, context)
     if choice == '📝 ADD':
-        update.message.reply_text('Введите задачу сэр: ')
-        return ADD
+        update.message.reply_text("Введите имя исполнителя")
+        return NAME
     if choice == '🔎 SEARCH':
         context.bot.send_sticker(update.message.chat.id, st.listen)
         context.bot.send_message(update.effective_chat.id,
-                     f'Что бы вы хотели найти, Мастер {update.effective_user.first_name}: ')
+                     f'Что бы вы хотели найти,{update.effective_user.first_name}: ')
         return SEARCH
     if choice == '❌ DELETE':
         update.message.reply_text("Найти задачу для удаления: ")
@@ -96,43 +95,50 @@ def view(update, context):
     update.message.reply_text(tasks_string)
     return sub_menu(update, context)
 
-def add(update, context):
+
+
+def name(update, context):
     user = update.message.from_user
     logger.info("Task %s: %s", user.first_name, update.message.text)
     name = update.message.text
     context.user_data['name'] = name
-    update.message.reply_text("Сэр, Введите дату в формате ДД/ММ/ГГ: ")
-    return DATA
+    update.message.reply_text("Введите фамилию исполнителя")
+    return SURNAME
 
-def data(update, context):
+def surname(update, context):
     user = update.message.from_user
     logger.info("Task %s: %s", user.first_name, update.message.text)
-    data = update.message.text
-    data += '_'
-    context.user_data['data'] = data
-    update.message.reply_text("Сэр, Введите время в формате ЧЧ:ММ ")
-    return TIME
+    surname = update.message.text
+    context.user_data['surname'] = surname
+    update.message.reply_text("Введите статус задания:\n <в поцессе выполнения>\n <выполнено>")
+    return STATUS
 
-def time(update, context):
+def status(update, context):
+    user = update.message.from_user
+    logger.info("Task %s: %s", user.first_name, update.message.text)
+    status= update.message.text
+    context.user_data['status'] = status
+    update.message.reply_text("Введите задачу")
+    return ADD
+
+def add(update, context):
     tasks = read_csv()
     task = {}
-    update.message.reply_text(f'{task}')
     user = update.message.from_user
     logger.info("Task %s: %s", user.first_name, update.message.text)
-    time = update.message.text
-    data = context.user_data.get('data') + time
+    add_task = update.message.text
     name = context.user_data.get('name')
-    task['Имя'] = user.first_name
-    task['Фамилия'] = user.last_name
-    task['Текущая дата'] = TIME_NOW
-    task['Дата выполнения'] = data
-    task['Задача'] = name
-    update.message.reply_text(f'{task}')
+    surname = context.user_data.get('surname')
+    status = context.user_data.get('status')
+    task['Имя'] = name
+    task['Фамилия'] = surname
+    task['Статус выполнения'] = status
+    task['Задача'] = add_task
     tasks.append(task)
     o.write_csv(tasks)
     context.bot.send_sticker(update.message.chat.id, st.complete)
     context.bot.send_message(update.effective_chat.id,
-                    f'Мастер {update.effective_user.first_name}, задача успешно добавлена!:')
+                    f'{update.effective_user.first_name}, задача {task} успешно добавлена!:')
     return sub_menu(update, context)
 
 
@@ -141,15 +147,13 @@ def search(update, context):
     logger.info("Выбор поиска: %s: %s", user.first_name, update.message.text)
     searchstring = update.message.text
     tasks = read_csv()
-    if searchstring==[]:
+    searched_tasks = o.search_task(searchstring, tasks)
+    if searched_tasks==[]:
             context.bot.send_message(update.effective_chat.id,
                     f' {update.effective_user.first_name}, по вашему запросу "{searchstring}" ничего не найдено:')
-    else:
-        tasks_filter = o.filter_task(user.first_name, tasks)
-        searched_tasks = o.search_task(searchstring, tasks)
+    else:                
         context.bot.send_message(update.effective_chat.id,
                         f' {update.effective_user.first_name}, по вашему запросу "{searchstring}" найдено:')
-        update.message.reply_text('🧐')
         tasks_string = o.view_tasks(searched_tasks)
         update.message.reply_text(tasks_string)
 
@@ -159,27 +163,24 @@ def search(update, context):
 
 
 def delete(update, context):
-    tasks = read_csv()
     user = update.message.from_user
     logger.info("Выбор удаления: %s: %s", user.first_name, update.message.text)
     searchstring = update.message.text
-    o.delete_task(searchstring, tasks)
+    searched_task=o.delete_task(searchstring)
     context.bot.send_sticker(update.message.chat.id, st.complete)
-    update.message.reply_text('Задача удалена, сэр.')
-    o.write_csv(tasks)
+    update.message.reply_text(f'{searched_task}')
     return sub_menu(update, context)
 
     
 def edit(update, context):
-    tasks = read_csv()
     user = update.message.from_user
     logger.info("Выбор редактирования: %s: %s", user.first_name, update.message.text)
     searchstring = update.message.text
-    o.edit_task(searchstring, tasks)
+    searched_task=o.delete_task(searchstring)
     context.bot.send_sticker(update.message.chat.id, st.complete)
-    update.message.reply_text('Задача отредактирована, сэр.')
-    o.write_csv(tasks)
-    return sub_menu(update, context)
+    update.message.reply_text(f'{searched_task}')
+    update.message.reply_text("Введите имя исполнителя" )
+    return NAME
 
 
 
@@ -214,13 +215,14 @@ if __name__ == '__main__':
             START: [CommandHandler('start', start)],
             SUB_MENU: [MessageHandler(Filters.text, sub_menu)],
             ADD: [MessageHandler(Filters.text, add)],
+            NAME: [MessageHandler(Filters.text, name)],
+            SURNAME: [MessageHandler(Filters.text, surname)],
+            STATUS: [MessageHandler(Filters.text, status)],
             DELETE: [MessageHandler(Filters.text, delete)],
             SEARCH: [MessageHandler(Filters.text, search)],
             MENU: [MessageHandler(Filters.text, menu)],
             MAIN_MENU: [MessageHandler(Filters.text,main_menu)],
             EDIT: [MessageHandler(Filters.text, edit)],
-            DATA: [MessageHandler(Filters.text, data)],
-            TIME: [MessageHandler(Filters.text, time)],
         },
         # точка выхода из разговора
         fallbacks=[CommandHandler('cancel', cancel)],
